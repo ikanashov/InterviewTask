@@ -1,4 +1,4 @@
-from client.models import ServerData
+from client.client import Client
 
 from dummy_server.server import get_random_request
 
@@ -9,5 +9,5 @@ if __name__ == "__main__":
     for _ in range(10):
         request = get_random_request()
         print(request)
-        print(ServerData(**request))
         # process request below
+        print(Client(request).process_data())
