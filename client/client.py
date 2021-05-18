@@ -1,26 +1,41 @@
+from datetime import timedelta
+from typing import Union
+
+from .config import DELTATIMEFORIMAGE, JPGEXTENSION
 from .models import ServerData
-
-
 
 
 class Client():
     def __init__(self, request: dict) -> None:
-        self.request = ServerData(**request)
-
+       self.request = ServerData(**request)
 
     def process_sound(self) -> str:
         return 'sound'
     
     def process_image(self) -> str:
-        return 'image'
-    
+        is_jpeg = self.is_jpeg(self.request.content)
+        if is_jpeg:
+            return is_jpeg
+        else:
+            return self.request.ts - timedelta(hours=DELTATIMEFORIMAGE)
+   
     def process_video(self) -> str:
         return 'video'
     
     def process_text(self) -> str:
         return 'text'
-
-
+    
+    @staticmethod
+    def is_jpeg(filename: str) -> Union[bool, str]:
+        file_ext = filename.rsplit('.', maxsplit=1)
+        if (
+            (file_ext[-1].lower() in JPGEXTENSION) 
+            and (file_ext[0] != '') 
+            and (len(file_ext) > 1)
+        ):
+            return file_ext[0]
+        else:
+            return False
 
     def process_data(self) -> str:
         if self.request.type == self.request.type.sound:
