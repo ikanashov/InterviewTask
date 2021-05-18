@@ -10,13 +10,13 @@ class Client():
        self.request = ServerData(**request)
 
     def process_sound(self) -> str:
-        first_unique_char = None
-        # maybe list comprehension ?
-        for char in reversed(self.request.content):
-            if self.request.content.count(char) == 1:
-                first_unique_char = char
-        return first_unique_char
-    
+        first_unique_char = [
+            char for char in self.request.content 
+            if self.request.content.count(char) == 1
+        ]
+        if first_unique_char:
+            return first_unique_char[0]
+
     def process_image(self) -> str:
         is_jpeg = self.is_jpeg(self.request.content)
         if is_jpeg:
