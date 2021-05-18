@@ -19,3 +19,4 @@ class ServerData(BaseModel):
 class AllowData(str, Enum):
     ok = 'OK'
     reject = 'REJECT'
+    
