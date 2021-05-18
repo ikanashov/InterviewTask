@@ -1,7 +1,7 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Union
 
-from .config import ALLOWEDVIDEOEXTWEEKEND, ALLOWEDVIDEOEXTWORKDAY, EMOJIDAYS
+from .config import ALLOWEDVIDEOEXTWEEKEND, ALLOWEDVIDEOEXTWORKDAY, DELTADAYSFORIGNORE, EMOJIDAYS
 from .config import DELTATIMEFORIMAGE, JPGEXTENSION, TEXTNOTCOUNTSYMBOLS
 from .models import AllowData, ServerData
 
@@ -9,6 +9,8 @@ from .models import AllowData, ServerData
 class Client():
     def __init__(self, request: dict) -> None:
        self.request = ServerData(**request)
+       self.processdata = True
+       self.deltatime =  datetime.now() - self.request.ts
 
     def process_sound(self) -> str:
         first_unique_char = [
@@ -71,8 +73,17 @@ class Client():
         elif self.request.type == self.request.type.text:
             return self.process_text()
         elif self.request.type == self.request.type.image:
-            return self.process_image()
+            if self.deltatime.days < DELTADAYSFORIGNORE:
+                return self.process_image()
+            else:
+                self.processdata = False
         elif self.request.type == self.request.type.video:
-            return self.process_video()
+            if self.deltatime.days < DELTADAYSFORIGNORE:
+                return self.process_video()
+            else:
+                self.processdata = False
         else:
             raise TypeError('Unsupported data type')
+
+    def is_data_processed(self) -> bool:
+        return self.processdata
