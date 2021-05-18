@@ -1,8 +1,8 @@
 from datetime import datetime
-
 from enum import Enum
 
 from pydantic import BaseModel
+
 
 class ServerDataType(str, Enum):
     sound = 'sound'
@@ -16,7 +16,7 @@ class ServerData(BaseModel):
     ts: datetime
     content: str
 
+
 class AllowData(str, Enum):
     ok = 'OK'
     reject = 'REJECT'
-    
