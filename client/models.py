@@ -15,3 +15,8 @@ class ServerData(BaseModel):
     type: ServerDataType
     ts: datetime
     content: str
+
+class AllowData(str, Enum):
+    ok = 'OK'
+    reject = 'REJECT'
+    
