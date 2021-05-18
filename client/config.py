@@ -1,0 +1,3 @@
+JPGEXTENSION = ('jpg', 'jpeg')
+
+DELTATIMEFORIMAGE = 24
