@@ -10,4 +10,8 @@ if __name__ == "__main__":
         request = get_random_request()
         print(request)
         # process request below
-        print(Client(request).process_data())
+        data = Client(request)
+        processeddata = data.process_data()
+        # print(data.is_data_processed())
+        if data.is_data_processed():
+            print(processeddata)
