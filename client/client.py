@@ -1,7 +1,8 @@
 from datetime import timedelta
 from typing import Union
 
-from .config import ALLOWEDVIDEOEXTWEEKEND, ALLOWEDVIDEOEXTWORKDAY, DELTATIMEFORIMAGE, JPGEXTENSION
+from .config import ALLOWEDVIDEOEXTWEEKEND, ALLOWEDVIDEOEXTWORKDAY, EMOJIDAYS
+from .config import DELTATIMEFORIMAGE, JPGEXTENSION, TEXTNOTCOUNTSYMBOLS
 from .models import AllowData, ServerData
 
 
@@ -30,7 +31,10 @@ class Client():
         return self.is_video_allow(self.request.content, ALLOWEDVIDEOEXTWORKDAY)
     
     def process_text(self) -> str:
-        return 'text'
+        if self.request.ts.isoweekday() > 5:
+            return EMOJIDAYS[self.request.ts.isoweekday()]
+        else:
+            return self.unique_word_count(self.request.content)
     
     @staticmethod
     def is_jpeg(filename: str) -> Union[bool, str]:
@@ -55,6 +59,11 @@ class Client():
             return AllowData.ok.value
         return AllowData.reject.value
 
+    @staticmethod
+    def unique_word_count(message: str) -> int:
+        message = ''.join([char for char in message if char not in TEXTNOTCOUNTSYMBOLS])
+        message = set(message.strip().lower().split())
+        return len(message)
 
     def process_data(self) -> str:
         if self.request.type == self.request.type.sound:
